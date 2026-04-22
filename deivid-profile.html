@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Deivid · Cybersecurity Student</title>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=Fira+Code:wght@300;400;500&family=Lora:ital,wght@0,400;1,400&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --bg: #050e1a;
+      --bg2: #081525;
+      --cyan: #00e5ff;
+      --cyan-dim: #0097aa;
+      --green: #39ff6e;
+      --green-dim: #1a7a35;
+      --orange: #ff7043;
+      --text: #cde8f5;
+      --text-dim: #6a8fa8;
+      --border: rgba(0,229,255,0.15);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Lora', Georgia, serif;
+      font-size: 1rem;
+      line-height: 1.75;
+      overflow-x: hidden;
+    }
+
+    /* ── GRID BG ── */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(0,229,255,0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0,229,255,0.03) 1px, transparent 1px);
+      background-size: 40px 40px;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* ── SCANLINE ── */
+    body::after {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background: repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent 2px,
+        rgba(0,0,0,0.07) 2px,
+        rgba(0,0,0,0.07) 4px
+      );
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .page {
+      position: relative;
+      z-index: 1;
+      max-width: 900px;
+      margin: 0 auto;
+      padding: clamp(2rem, 6vw, 5rem) clamp(1rem, 4vw, 2.5rem);
+    }
+
+    /* ── TERMINAL HEADER ── */
+    .terminal-bar {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: #0d1f30;
+      border: 1px solid var(--border);
+      border-bottom: none;
+      padding: 0.5rem 1rem;
+      border-radius: 8px 8px 0 0;
+      animation: fadeDown 0.6s ease both;
+    }
+
+    .dot { width: 12px; height: 12px; border-radius: 50%; }
+    .dot-red    { background: #ff5f57; }
+    .dot-yellow { background: #febc2e; }
+    .dot-green  { background: #28c840; }
+
+    .terminal-title {
+      font-family: 'Fira Code', monospace;
+      font-size: 0.72rem;
+      color: var(--text-dim);
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    /* ── HERO ── */
+    .hero {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 0 0 8px 8px;
+      padding: clamp(2rem, 5vw, 3.5rem);
+      margin-bottom: 2rem;
+      position: relative;
+      overflow: hidden;
+      animation: fadeUp 0.8s 0.1s ease both;
+    }
+
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: -60px; right: -60px;
+      width: 250px; height: 250px;
+      background: radial-gradient(circle, rgba(0,229,255,0.07) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .prompt {
+      font-family: 'Fira Code', monospace;
+      font-size: 0.8rem;
+      color: var(--green);
+      margin-bottom: 0.5rem;
+    }
+
+    .prompt span { color: var(--cyan); }
+
+    h1 {
+      font-family: 'Syne', sans-serif;
+      font-size: clamp(2.8rem, 8vw, 5rem);
+      font-weight: 800;
+      line-height: 1;
+      letter-spacing: -0.02em;
+      color: #fff;
+      margin-bottom: 0.3rem;
+    }
+
+    h1 .accent {
+      color: var(--cyan);
+      text-shadow: 0 0 30px rgba(0,229,255,0.4);
+    }
+
+    .tagline {
+      font-family: 'Fira Code', monospace;
+      font-size: clamp(0.8rem, 2vw, 1rem);
+      color: var(--green);
+      margin-bottom: 1.5rem;
+    }
+
+    .tagline::before { content: '> '; color: var(--cyan-dim); }
+
+    .hero-desc {
+      max-width: 560px;
+      color: var(--text-dim);
+      font-size: 1.05em;
+    }
+
+    .hero-desc strong { color: var(--cyan); font-style: normal; font-weight: normal; }
+
+    /* ── AGE BADGE ── */
+    .age-badge {
+      display: inline-block;
+      font-family: 'Fira Code', monospace;
+      font-size: 0.7rem;
+      border: 1px solid var(--cyan-dim);
+      color: var(--cyan);
+      padding: 0.15rem 0.6rem;
+      margin-top: 1rem;
+      letter-spacing: 0.1em;
+    }
+
+    /* ── SECTION GRID ── */
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.2rem;
+      margin-bottom: 1.2rem;
+    }
+
+    @media (max-width: 580px) { .grid-2 { grid-template-columns: 1fr; } }
+
+    /* ── CARDS ── */
+    .card {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 1.4rem 1.6rem;
+      position: relative;
+      overflow: hidden;
+      transition: border-color 0.3s, transform 0.3s;
+    }
+
+    .card:hover {
+      border-color: var(--cyan-dim);
+      transform: translateY(-3px);
+    }
+
+    .card::after {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, var(--cyan), transparent);
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+
+    .card:hover::after { opacity: 1; }
+
+    .card-label {
+      font-family: 'Fira Code', monospace;
+      font-size: 0.65rem;
+      color: var(--cyan-dim);
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      margin-bottom: 0.7rem;
+    }
+
+    .card-label::before { content: '// '; }
+
+    .card h3 {
+      font-family: 'Syne', sans-serif;
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 0.5rem;
+    }
+
+    .card p { font-size: 0.92em; color: var(--text-dim); }
+
+    .card .emoji {
+      font-size: 2rem;
+      margin-bottom: 0.6rem;
+      display: block;
+      filter: drop-shadow(0 0 8px rgba(0,229,255,0.3));
+    }
+
+    /* ── FULL WIDTH CARD ── */
+    .card-full {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 1.4rem 1.6rem;
+      margin-bottom: 1.2rem;
+      transition: border-color 0.3s;
+    }
+
+    .card-full:hover { border-color: var(--cyan-dim); }
+
+    /* ── SKILLS LIST ── */
+    .skills-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-top: 0.8rem;
+    }
+
+    .skill-tag {
+      font-family: 'Fira Code', monospace;
+      font-size: 0.72rem;
+      background: rgba(0,229,255,0.06);
+      border: 1px solid rgba(0,229,255,0.2);
+      color: var(--cyan);
+      padding: 0.25rem 0.7rem;
+      border-radius: 2px;
+      transition: background 0.2s;
+    }
+
+    .skill-tag:hover { background: rgba(0,229,255,0.12); }
+
+    /* ── OBJETIVO ── */
+    .goal-card {
+      background: linear-gradient(135deg, #081525 0%, #0a1f10 100%);
+      border: 1px solid rgba(57,255,110,0.2);
+      border-radius: 6px;
+      padding: 1.8rem 2rem;
+      margin-bottom: 1.2rem;
+      position: relative;
+      overflow: hidden;
+      transition: border-color 0.3s;
+    }
+
+    .goal-card:hover { border-color: rgba(57,255,110,0.5); }
+
+    .goal-card::before {
+      content: '';
+      position: absolute;
+      top: -40px; right: -40px;
+      width: 180px; height: 180px;
+      background: radial-gradient(circle, rgba(57,255,110,0.06) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .goal-card .card-label { color: rgba(57,255,110,0.6); }
+
+    .goal-card h3 {
+      font-family: 'Syne', sans-serif;
+      font-size: 1.3rem;
+      font-weight: 800;
+      color: var(--green);
+      margin-bottom: 0.5rem;
+    }
+
+    .goal-card p { color: #7ab890; font-size: 0.95em; }
+
+    /* ── SONHO PRAIA ── */
+    .dream-card {
+      background: linear-gradient(135deg, #0a1020 0%, #0a1a25 50%, #051510 100%);
+      border: 1px solid rgba(255,112,67,0.25);
+      border-radius: 6px;
+      padding: 2rem;
+      margin-bottom: 2rem;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+      transition: border-color 0.3s, transform 0.3s;
+    }
+
+    .dream-card:hover {
+      border-color: rgba(255,112,67,0.5);
+      transform: translateY(-3px);
+    }
+
+    .dream-card .wave {
+      font-size: 3rem;
+      display: block;
+      margin-bottom: 0.5rem;
+      animation: wave 3s ease-in-out infinite;
+    }
+
+    .dream-card h3 {
+      font-family: 'Syne', sans-serif;
+      font-size: clamp(1.4rem, 4vw, 2rem);
+      font-weight: 800;
+      color: var(--orange);
+      text-shadow: 0 0 20px rgba(255,112,67,0.3);
+      margin-bottom: 0.4rem;
+    }
+
+    .dream-card p { color: #a07060; font-size: 0.92em; }
+
+    /* ── FOOTER ── */
+    footer {
+      font-family: 'Fira Code', monospace;
+      font-size: 0.72rem;
+      color: var(--text-dim);
+      text-align: center;
+      border-top: 1px solid var(--border);
+      padding-top: 1.5rem;
+      letter-spacing: 0.1em;
+    }
+
+    .cursor {
+      display: inline-block;
+      width: 8px; height: 1em;
+      background: var(--cyan);
+      vertical-align: text-bottom;
+      animation: blink 1s step-end infinite;
+    }
+
+    /* ── ANIMATIONS ── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes fadeDown {
+      from { opacity: 0; transform: translateY(-10px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50%       { opacity: 0; }
+    }
+
+    @keyframes wave {
+      0%, 100% { transform: rotate(-5deg); }
+      50%       { transform: rotate(5deg); }
+    }
+
+    /* stagger cards */
+    .card:nth-child(1) { animation: fadeUp 0.7s 0.2s ease both; }
+    .card:nth-child(2) { animation: fadeUp 0.7s 0.35s ease both; }
+    .card:nth-child(3) { animation: fadeUp 0.7s 0.5s ease both; }
+    .card:nth-child(4) { animation: fadeUp 0.7s 0.65s ease both; }
+    .card-full         { animation: fadeUp 0.7s 0.4s ease both; }
+    .goal-card         { animation: fadeUp 0.7s 0.55s ease both; }
+    .dream-card        { animation: fadeUp 0.7s 0.7s ease both; }
+  </style>
+</head>
+<body>
+<div class="page">
+
+  <!-- TERMINAL BAR -->
+  <div class="terminal-bar">
+    <div class="dot dot-red"></div>
+    <div class="dot dot-yellow"></div>
+    <div class="dot dot-green"></div>
+    <div class="terminal-title">deivid@cybersec ~ profile.sh</div>
+  </div>
+
+  <!-- HERO -->
+  <div class="hero">
+    <div class="prompt">deivid@cybersec:<span>~</span>$ cat profile.txt</div>
+    <h1>Dei<span class="accent">vid</span></h1>
+    <div class="tagline">Estudante de Cybersegurança · 31 anos · Porto Alegre, RS</div>
+    <p class="hero-desc">
+      Iniciando minha jornada no mundo da <strong>segurança cibernética</strong>,
+      com foco em Blue Team e SOC. Aprendendo a programar e apaixonado por
+      <strong>automação de tarefas</strong>. Construindo o futuro um commit por vez.
+    </p>
+    <span class="age-badge">AGE: 31 · NEXT_BIRTHDAY: julho/2026 · STATUS: em evolução</span>
+  </div>
+
+  <!-- GRID 2x2 -->
+  <div class="grid-2">
+
+    <div class="card">
+      <span class="emoji">🛡️</span>
+      <div class="card-label">área de estudo</div>
+      <h3>Cybersegurança</h3>
+      <p>Focado em Blue Team e análise SOC. Estudando no Tecnólogo em Defesa Cibernética pela Estácio.</p>
+    </div>
+
+    <div class="card">
+      <span class="emoji">💻</span>
+      <div class="card-label">programação</div>
+      <h3>Iniciante em código</h3>
+      <p>Aprendendo C e Python do zero, com objetivo de dominar automação de tarefas e scripts de segurança.</p>
+    </div>
+
+    <div class="card">
+      <span class="emoji">⚽</span>
+      <div class="card-label">hobbie favorito</div>
+      <h3>Futebol</h3>
+      <p>Apaixonado pelo futebol — dentro e fora de campo. É onde recarrego as energias fora do terminal.</p>
+    </div>
+
+    <div class="card">
+      <span class="emoji">🤖</span>
+      <div class="card-label">próximo passo</div>
+      <h3>Automação</h3>
+      <p>Meu objetivo técnico de curto prazo: aprender a automatizar tarefas repetitivas com scripts e ferramentas.</p>
+    </div>
+
+  </div>
+
+  <!-- STACK -->
+  <div class="card-full">
+    <div class="card-label">ferramentas &amp; tecnologias</div>
+    <div class="skills-list">
+      <span class="skill-tag">Splunk</span>
+      <span class="skill-tag">Trend Micro Vision One</span>
+      <span class="skill-tag">MITRE ATT&amp;CK</span>
+      <span class="skill-tag">Kali Linux</span>
+      <span class="skill-tag">Linguagem C</span>
+      <span class="skill-tag">Python (em progresso)</span>
+      <span class="skill-tag">Bash</span>
+      <span class="skill-tag">VS Code</span>
+      <span class="skill-tag">VirtualBox</span>
+      <span class="skill-tag">ISO 27001</span>
+    </div>
+  </div>
+
+  <!-- OBJETIVO -->
+  <div class="goal-card">
+    <div class="card-label">objetivo de carreira</div>
+    <h3>🚀 Crescer na área de Segurança</h3>
+    <p>
+      Meu foco é me consolidar como analista SOC — começando pelo N1 e evoluindo continuamente.
+      Cada certificação, cada lab, cada linha de código é um passo a mais rumo a uma carreira sólida em cybersegurança.
+      A jornada começou, e não tem volta.
+    </p>
+  </div>
+
+  <!-- SONHO -->
+  <div class="dream-card">
+    <span class="wave">🌊</span>
+    <h3>🏖️ SONHO: Casa na Praia</h3>
+    <p>
+      Por trás de cada terminal aberto e cada log analisado,<br>
+      existe um sonho bem definido: <em>trabalhar remoto, viver bem, e ter uma casa na praia.</em><br>
+      Cybersegurança é o caminho. 🐚
+    </p>
+  </div>
+
+  <!-- FOOTER -->
+  <footer>
+    <div>$ echo "Feito com dedicação · Deivid · 2026"</div>
+    <div style="margin-top:0.3rem">
+      Estudante → Analista → Especialista → Casa na praia&nbsp;<span class="cursor"></span>
+    </div>
+  </footer>
+
+</div>
+</body>
+</html>
