@@ -91,7 +91,7 @@ Quando não estou no terminal, estou no futebol. Simples assim.
 
   └── Mais certificações
 
-  └── 🏖️ Casa na praia (em progresso...)
+
 ```
 
 ---
