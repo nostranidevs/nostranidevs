@@ -98,6 +98,6 @@ Quando não estou no terminal, estou no futebol. Simples assim.
 
 <div align="center">
 
-**Porto Alegre, RS 🇧🇷 · Estudante → Analista → Especialista → 🏖️**
+**Porto Alegre, RS 🇧🇷 · Estudante → Analista → Especialista**
 
 </div>
